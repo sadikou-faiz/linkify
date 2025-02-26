@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String       @id @default(cuid())
+  name      String?
+  email     String?      @unique
+  pseudo    String?      @unique
+  socialLinks SocialLink[]
+  createdAt DateTime     @default(now())
+  theme     String       @default("retro")
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  url       String
+  pseudo    String
+  active    Boolean  @default(true)
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+}
